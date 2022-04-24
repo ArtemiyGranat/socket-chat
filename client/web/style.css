@@ -1,0 +1,53 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(to right, rgb(58, 57, 134), rgb(152, 174, 213));
+}   
+
+.navbar{
+    height:auto;
+    width:auto;
+}
+
+.navbar h1 {
+    text-transform:uppercase;
+    margin-top:5%;
+    font-size:28px;
+    letter-spacing:1.5px;
+    font-weight:900;
+    color:aliceblue;
+}
+
+.head {
+    margin-top:5%;
+    height:auto;
+    width:75%;
+    background: white;
+    border-radius:10px;
+    border: 2px solid black;
+    padding-left:5%;
+}
+
+.head button {
+    max-height:50%;
+    margin-top:5% !important;
+    margin-bottom:5% !important;
+}
+
+.head h1 {
+    text-transform:uppercase;
+    margin-top:5%;
+    font-size:28px;
+    letter-spacing:1.5px;
+    font-weight:900;
+}
+
+.head p {
+    word-spacing:0px;
+    color: rgb(159, 172, 182);
+    font-size:17px;
+    margin:0;
+    margin-top:5px;
+}
