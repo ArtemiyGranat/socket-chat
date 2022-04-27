@@ -5,7 +5,7 @@ import eel
 eel.init('web')
 
 PORT = 5050
-SERVER_IP = "192.168.1.11"
+SERVER_IP = socket.gethostbyname(socket.gethostname())
 SERVER_ADDRESS = (SERVER_IP, PORT)
 FORMAT = "utf-8"
 DISCONNECT_MESSAGE = ".d"
@@ -31,8 +31,8 @@ def send(client, msg):
     client.send(message)
 
 @eel.expose
-def start():
-    eel.start('chat.html', port=PORT)
+def start(username):
+    # eel.start('chat.html', port=PORT)
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect(SERVER_ADDRESS)
     thread = threading.Thread(target=handle_messages, args=[client_socket])
@@ -47,7 +47,5 @@ def start():
     send(client_socket, DISCONNECT_MESSAGE)
 
 
-# username = input("Enter your username: ")
 if __name__ == "__main__":
     eel.start('index.html', mode='chrome', size=(1000, 600))
-    start()
