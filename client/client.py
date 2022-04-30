@@ -32,12 +32,12 @@ def send(client, msg):
 
 @eel.expose
 def start(username):
-    # eel.start('chat.html', port=PORT)
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect(SERVER_ADDRESS)
     thread = threading.Thread(target=handle_messages, args=[client_socket])
     thread.start()
     connected = True
+    eel.start('chat.html', port=PORT)
     while connected:
         print("[YOU] ", end="")
         msg = input()

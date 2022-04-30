@@ -1,0 +1,61 @@
+* {
+    box-sizing: border-box;
+    margin:0;
+    padding:0;
+}
+
+
+.leftside {
+    /* position: relative; */
+    background-color: aliceblue;
+    min-height:100vh;
+}
+
+.rightside {
+    /* position: relative; */
+    background-color: rgba(128, 128, 128, 0.24);
+    height:auto;
+}
+
+.recv-msg {
+    background-color: #add8e6;
+    float: left;
+    clear: both;
+    padding: 1% 1% 0 2%;
+    margin-top: 1%;
+    margin-bottom:1%;
+    max-width: 50%;
+    border-radius:10px;
+}
+
+.sent-msg {
+    background-color: #fafafa;
+    float: right;
+    clear: both;
+    padding: 1% 1% 0 2%;
+    margin-top: 1%;
+    margin-bottom:1%;
+    max-width: 50%;
+    border-radius:10px;
+}
+
+.time {
+    text-align: right;
+    padding-bottom: 1%;
+}
+
+.input-msg-div {
+    position:sticky;
+    bottom:0;
+    background-color: #fafafa;
+    width:100%;
+}
+
+.input-msg-div input {
+    width:100%;
+    font-size: .875rem;
+}
+
+.input-msg-div button {
+    width:100%;
+}

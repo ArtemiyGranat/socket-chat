@@ -1,5 +1,5 @@
-async function send_name() {
+function send_name() {
     username = document.getElementById("username_field").value
-    // window.close()
+    window.close()
     eel.start(username)
 }
