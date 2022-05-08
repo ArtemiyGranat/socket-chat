@@ -1,4 +1,5 @@
 * {
+    font-family: monospace;
     box-sizing: border-box;
     margin:0;
     padding:0;
@@ -17,22 +18,35 @@
     height:auto;
 }
 
-.recv-msg {
+.username {
+    font-weight: 800;
+    color: #4682b4;
+}
+
+.you {
+    font-weight: 800;
+}
+
+.recv-msg-div {
+    word-wrap: break-word;
+    font-family: monospace;
     background-color: #add8e6;
     float: left;
     clear: both;
-    padding: 1% 1% 0 2%;
+    padding: 1% 1% 0 1%;
     margin-top: 1%;
     margin-bottom:1%;
     max-width: 50%;
     border-radius:10px;
 }
 
-.sent-msg {
+.sent-msg-div {
+    word-wrap: break-word;
+    font-family: monospace;
     background-color: #fafafa;
     float: right;
     clear: both;
-    padding: 1% 1% 0 2%;
+    padding: 1% 1% 0 1%;
     margin-top: 1%;
     margin-bottom:1%;
     max-width: 50%;
@@ -58,4 +72,11 @@
 
 .input-msg-div button {
     width:100%;
+    border:none;
+    border-radius: 10px;
+}
+
+.input-msg-div img {
+    width:20%;
+    height:20%;
 }

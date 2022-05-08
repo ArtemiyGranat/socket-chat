@@ -1,6 +1,8 @@
 from Crypto.Cipher import AES
 # from Crypto.Random import get_random_bytes
 
+ENCODING = 'utf-8'
+
 
 class Encryptor:
     def __init__(self) -> None:
@@ -12,10 +14,10 @@ class Encryptor:
     def pad(self, message) -> str:
         return message + ((16 - len(message) % 16) * "{")
 
-    def encrypt(self, message) -> str:
-        return self.cipher.encrypt(self.pad(message).encode("utf-8"))
+    def encrypt(self, message) -> bytes:
+        return self.cipher.encrypt(self.pad(message).encode(ENCODING))
 
     def decrypt(self, message) -> str:
-        decrypted_msg = self.d_cipher.decrypt(message).decode("utf-8")
-        cnt = decrypted_msg.count('{')
-        return decrypted_msg[:len(decrypted_msg) - cnt]
+        decrypted_msg = self.d_cipher.decrypt(message).decode(ENCODING)
+        decrypted_msg = decrypted_msg.replace('{', '')
+        return decrypted_msg
