@@ -44,7 +44,7 @@ class Server:
     def send_msg_from_server(self, conn, msg) -> None:
         packet = {
             "type": "private_message",
-            "username": "server".encode(ENCODING),
+            "username": "server",
             "destination": self._clients[conn],
             "data": msg
         }
