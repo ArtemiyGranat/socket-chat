@@ -14,7 +14,6 @@ PORT = 5050
 SERVER_IP = socket.gethostbyname(socket.gethostname())
 SERVER_ADDRESS = (SERVER_IP, PORT)
 ENCODING = "utf-8"
-DISCONNECT_MESSAGE = ".d"
 
 global client
 
@@ -26,8 +25,7 @@ class Client:
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def send_username(self, username) -> None:
-        self._username = username.encode(ENCODING)
-        self._socket.send(self._username)
+        self._socket.send(username.encode(ENCODING))
 
     def send_data(self, data) -> None:
         # enc_data = self._encryptor.encrypt(data["data"])
@@ -39,6 +37,7 @@ class Client:
         self.send_username(username)
         answer = self._socket.recv(8192).decode(ENCODING)
         if (answer == "OK"):
+            self._username = username
             self._is_connected = True
             run()
         else:
@@ -59,7 +58,11 @@ class Client:
                     self._socket.close()
                     eel.close_window()
                     break
-                username = packet['username'].decode(ENCODING)
+                if packet['type'] == 'message':
+                    username = packet['username']
+                elif packet['type'] == 'private_message':
+                    username = 'Private message from '
+                    username += packet['username']
                 # dec_message = self._encryptor.decrypt(packet['data'])
                 get_message(username, packet['data'])
             except Exception:
@@ -76,11 +79,19 @@ def resend_username(username) -> None:
 
 @eel.expose
 def send_message(msg) -> None:
-    packet = {
-        "type": "message",
-        "username": client._username,
-        "data": msg
-    }
+    if msg[0] == '@':
+        packet = {
+            "type": "private_message",
+            "username": client._username,
+            "destination": msg.split()[0][1:],
+            "data": msg
+        }
+    else:
+        packet = {
+            "type": "message",
+            "username": client._username,
+            "data": msg
+        }
     client.send_data(packet)
 
 
@@ -95,7 +106,7 @@ def run() -> None:
         eel.close_window()
         thread = threading.Thread(target=client.handle_messages)  # daemon
         thread.start()
-        eel.start('chat.html', port=0, size=(1000, 600))
+        eel.start('chat.html', port=0, size=(800, 500))
     except Exception:
         print("Server is offline. Try again later")
         eel.get_exception("Server is offline. Try again later")

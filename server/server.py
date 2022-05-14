@@ -8,7 +8,7 @@ PORT = 5050
 SERVER_IP = socket.gethostbyname(socket.gethostname())
 SERVER_ADDRESS = (SERVER_IP, PORT)
 ENCODING = 'utf-8'
-DISCONNECT_MESSAGE = ".d"
+DISCONNECT_MESSAGE = "/disconnect"
 
 
 class Server:
@@ -25,10 +25,42 @@ class Server:
             if client != conn:
                 client.send(packet)
 
+    def send_private_msg(self, packet) -> None:
+        msg_sent = False
+        for client in self._clients:
+            if self._clients[client] == packet['destination']:
+                msg_sent = True
+                packet = pickle.dumps(packet)
+                client.send(packet)
+                break
+        if msg_sent is False:
+            sender_username = packet['username']
+            for client in self._clients:
+                if self._clients[client] == sender_username:
+                    self.send_msg_from_server(client, '''There is no such
+                                                 person on the server''')
+                    break
+
+    def send_msg_from_server(self, conn, msg) -> None:
+        packet = {
+            "type": "private_message",
+            "username": "server".encode(ENCODING),
+            "destination": self._clients[conn],
+            "data": msg
+        }
+        packet = pickle.dumps(packet)
+        conn.send(packet)
+
     def send_disc_msg(self, conn) -> None:
+        packet = {
+            "type": "message",
+            "username": "server".encode(ENCODING),
+            "data": f'''{self._clients[conn]} has been disconnected'''
+        }
+        packet = pickle.dumps(packet)
         for client in self._clients:
             if client != conn:
-                client.send(f"{self._clients[conn]} has been disconnected")
+                client.send(packet)
 
     def handle_client(self, conn, addr) -> None:
         print(f"[NEW CONNECTION] {addr} connected.")
@@ -50,13 +82,19 @@ class Server:
                     break
                 else:
                     packet = pickle.loads(packet)
-                    if packet['data'] == DISCONNECT_MESSAGE:
-                        is_connected = False
                     print(f"[{self._clients[conn]}] {packet}")
-                    if packet != DISCONNECT_MESSAGE:
-                        self.send_all(conn, packet)
-                    else:
-                        self.send_disc_msg(conn)
+                    if packet['type'] == 'message':
+                        if packet['data'] == DISCONNECT_MESSAGE:
+                            self.send_disc_msg(conn)
+                            is_connected = False
+                        else:
+                            self.send_all(conn, packet)
+                    elif packet['type'] == 'private_message':
+                        if packet['destination'] == self._clients[conn]:
+                            self.send_msg_from_server(conn, '''You can't send
+                                            a private message to yourself''')
+                        else:
+                            self.send_private_msg(packet)
         finally:
             print(f"Client {addr} has been disconnected")
             self._clients.pop(conn)

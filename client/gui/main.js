@@ -13,9 +13,11 @@ function resend_username() {
 
 async function send_message() {
     let text = document.getElementById("msgbox").value
-    document.getElementById("msgbox").value = ""
-    display_sent_msg(text)
-    eel.send_message(text)
+    if (text != "") {
+        document.getElementById("msgbox").value = ""
+        display_sent_msg(text)
+        eel.send_message(text)
+    }
 }
 
 // Display functions
@@ -117,10 +119,6 @@ function username_field_key_pressed(event) {
 
 function messagebox_field_key_pressed(event) {
     if (event.keyCode == 13) {
-        var messagebox_field = document.getElementById("msgbox")
-        var message = messagebox_field.value
-        if (message != "") {
-            send_message()
-        }
+        send_message()
     }
 }
