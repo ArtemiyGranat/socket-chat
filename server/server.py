@@ -36,16 +36,13 @@ class Server:
         is_connected = False
         while (not is_connected):
             username = conn.recv(8192).decode(ENCODING)
-            print(username)
             if (username not in self._clients.values()):
                 conn.send("OK".encode(ENCODING))
                 self._clients[conn] = username
                 is_connected = True
             else:
                 conn.send("WRONG USERNAME".encode(ENCODING))
-        print(self._clients.values())
 
-        is_connected = True
         try:
             while is_connected:
                 packet = conn.recv(8192)

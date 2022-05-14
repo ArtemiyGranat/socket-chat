@@ -37,7 +37,8 @@ class Client:
 
     def check_username_validity(self, username) -> None:
         self.send_username(username)
-        if (self._socket.recv(8192).decode(ENCODING) == "OK"):
+        answer = self._socket.recv(8192).decode(ENCODING)
+        if (answer == "OK"):
             self._is_connected = True
             run()
         else:
@@ -46,8 +47,6 @@ class Client:
     def connect(self, username) -> None:
         self._socket.connect(SERVER_ADDRESS)
         self.check_username_validity(username)
-        while (not self._is_connected):
-            pass
 
     def handle_messages(self) -> None:
         while self._is_connected:
@@ -72,7 +71,6 @@ class Client:
 
 @eel.expose
 def resend_username(username) -> None:
-    print("hello bro")
     client.check_username_validity(username)
 
 
@@ -92,11 +90,9 @@ def get_message(usrname, msg) -> None:
 
 
 @eel.expose
-def run(username) -> None:
+def run() -> None:
     try:
-        client.connect(username)
         eel.close_window()
-        client._is_connected = True  # remove later
         thread = threading.Thread(target=client.handle_messages)  # daemon
         thread.start()
         eel.start('chat.html', port=0, size=(1000, 600))
@@ -107,8 +103,7 @@ def run(username) -> None:
 
 @eel.expose
 def connect(username) -> None:
-    thread = threading.Thread(target=client.connect, args=username)
-    thread.start()
+    client.connect(username)
 
 
 if __name__ == "__main__":

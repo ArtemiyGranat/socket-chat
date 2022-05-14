@@ -2,8 +2,13 @@
 
 function send_name() {
     username = document.getElementById("username_field").value
-    document.getElementById('signin_btn').setAttribute('onclick','resend_username')
-    eel.run(username)
+    eel.connect(username)
+    document.getElementById('signin_btn').setAttribute('onclick','resend_username()')
+}
+
+function resend_username() {
+    username = document.getElementById("username_field").value
+    eel.resend_username(username)
 }
 
 async function send_message() {
@@ -81,13 +86,6 @@ function display_sent_msg(text) {
 
 // Eel exposed functions
 
-eel.expose(resend_username);
-function resend_username() {
-    console.log("hello bro")
-    username = document.getElementById("username_field").value
-    eel.resend_username(username)
-}
-
 eel.expose(username_reentry);
 function username_reentry() {
     alert("This username is already taken, please choose another one")
@@ -100,7 +98,6 @@ function get_recv_msg(usrname, msg) {
 
 eel.expose(close_window);
 function close_window() {
-    console.log("debug")
     window.close()
 }
 
