@@ -1,3 +1,8 @@
+html{
+    min-height:100%;
+    position: relative;
+}
+
 * {
     font-family: monospace;
     box-sizing: border-box;
@@ -5,17 +10,10 @@
     padding:0;
 }
 
-
-.leftside {
-    /* position: relative; */
-    background-color: aliceblue;
-    min-height:100vh;
-}
-
 .rightside {
     /* position: relative; */
     background-color: rgba(128, 128, 128, 0.24);
-    height:auto;
+    min-height:100vh;
 }
 
 .username {
@@ -59,7 +57,7 @@
 }
 
 .input-msg-div {
-    position:sticky;
+    /* position:sticky; */
     bottom:0;
     background-color: #fafafa;
     width:100%;
@@ -77,6 +75,6 @@
 }
 
 .input-msg-div img {
-    width:20%;
-    height:20%;
+    width:25%;
+    height:25%;
 }
