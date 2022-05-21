@@ -13,7 +13,7 @@ eel.init('gui')
 PORT = 5050
 SERVER_IP = socket.gethostbyname(socket.gethostname())
 SERVER_ADDRESS = (SERVER_IP, PORT)
-ENCODING = "utf-8"
+ENCODING = 'utf-8'
 
 global client
 
@@ -28,8 +28,8 @@ class Client:
         self._socket.send(username.encode(ENCODING))
 
     def send_data(self, data) -> None:
-        # enc_data = self._encryptor.encrypt(data["data"])
-        # data["data"] = enc_data
+        enc_data = self._encryptor.encrypt(data["data"])
+        data["data"] = enc_data
         data = pickle.dumps(data)
         self._socket.send(data)
 
@@ -63,8 +63,8 @@ class Client:
                 elif packet['type'] == 'private_message':
                     username = 'Private message from '
                     username += packet['username']
-                # dec_message = self._encryptor.decrypt(packet['data'])
-                get_message(username, packet['data'])
+                dec_message = self._encryptor.decrypt(packet['data'])
+                get_message(username, dec_message)
             except Exception:
                 print("Error! Disconnecting from the server")
                 self._socket.close()

@@ -1,23 +1,29 @@
 from Crypto.Cipher import AES
-# from Crypto.Random import get_random_bytes
+from Crypto import Random
 
 ENCODING = 'utf-8'
 
 
 class Encryptor:
     def __init__(self) -> None:
-        self.key = b'\xd2P\x05\x0b\xd5\x8e\xa2&#!\xe9\x80k\x17\xc7V'
-        self.iv = b'!\xc5\x1b\xca\xe7)\x89\xc0\xf8\x9e;\x0c\xf3H\xb3)'
-        self.cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
-        self.d_cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
+        key_file = open('key.txt', 'r')
+        self.key = key_file.readline().encode(ENCODING)
 
-    def pad(self, message) -> str:
-        return message + ((16 - len(message) % 16) * "{")
+    def pad(self, msg) -> str:
+        bs = AES.block_size
+        return msg + (bs - len(msg) % bs) * chr(bs - len(msg) % bs)
+
+    def unpad(self, msg) -> str:
+        return msg[:-ord(msg[len(msg)-1:])]
 
     def encrypt(self, message) -> bytes:
-        return self.cipher.encrypt(self.pad(message).encode(ENCODING))
+        message = self.pad(message)
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        return iv + cipher.encrypt(message.encode(ENCODING))
 
     def decrypt(self, message) -> str:
-        decrypted_msg = self.d_cipher.decrypt(message).decode(ENCODING)
-        decrypted_msg = decrypted_msg.replace('{', '')
-        return decrypted_msg
+        iv = message[:AES.block_size]
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        dec_msg = cipher.decrypt(message[AES.block_size:]).decode(ENCODING)
+        return self.unpad(dec_msg)
