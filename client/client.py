@@ -27,15 +27,15 @@ class Client:
         self._socket.send(username.encode(ENCODING))
 
     def send_data(self, data) -> None:
-        enc_data = self._encryptor.encrypt(data["data"])
-        data["data"] = enc_data
+        enc_data = self._encryptor.encrypt(data['data'])
+        data['data'] = enc_data
         data = pickle.dumps(data)
         self._socket.send(data)
 
     def check_username_validity(self, username) -> None:
         self.send_username(username)
         answer = self._socket.recv(8192).decode(ENCODING)
-        if (answer == "OK"):
+        if (answer == 'OK'):
             self._username = username
             self._is_connected = True
             run()
@@ -53,7 +53,7 @@ class Client:
                 if packet:
                     packet = pickle.loads(packet)
                 if not packet:
-                    print('\r' + "Disconnecting from the server")
+                    print('Disconnecting from the server')
                     self._socket.close()
                     eel.close_window()
                     break
@@ -65,7 +65,7 @@ class Client:
                 dec_message = self._encryptor.decrypt(packet['data'])
                 get_message(username, dec_message)
             except Exception:
-                print("Error! Disconnecting from the server")
+                print('Error! Disconnecting from the server')
                 self._socket.close()
                 eel.close_window()
                 break
@@ -80,17 +80,27 @@ def resend_username(username) -> None:
 def send_message(msg) -> None:
     if msg[0] == '@':
         packet = {
-            "type": "private_message",
-            "username": client._username,
-            "destination": msg.split()[0][1:],
-            "data": msg
+            'type': 'private_message',
+            'username': client._username,
+            'destination': msg.split()[0][1:],
+            'data': " ".join(msg.split()[1:])
         }
     else:
         packet = {
-            "type": "message",
-            "username": client._username,
-            "data": msg
+            'type': 'message',
+            'username': client._username,
+            'data': msg
         }
+    client.send_data(packet)
+
+
+@eel.expose
+def send_file(path) -> None:
+    packet = {
+        'type': 'file',
+        'username': client._username,
+        'data': path
+    }
     client.send_data(packet)
 
 
@@ -107,8 +117,8 @@ def run() -> None:
         thread.start()
         eel.start('chat.html', port=0, size=(800, 500))
     except Exception:
-        print("Server is offline. Try again later")
-        eel.get_exception("Server is offline. Try again later")
+        print('Server is offline. Try again later')
+        eel.get_exception('Server is offline. Try again later')
 
 
 @eel.expose
@@ -116,7 +126,7 @@ def connect(username) -> None:
     client.connect(username)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     server_ip = socket.gethostbyname(sys.argv[1])
     server_address = (server_ip, PORT)
     client = Client(server_address)
