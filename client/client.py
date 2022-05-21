@@ -1,7 +1,7 @@
 import socket
 import threading
 # import os
-# import sys
+import sys
 import pickle
 
 import eel
@@ -11,15 +11,14 @@ from encryptor import Encryptor
 eel.init('gui')
 
 PORT = 5050
-SERVER_IP = socket.gethostbyname(socket.gethostname())
-SERVER_ADDRESS = (SERVER_IP, PORT)
 ENCODING = 'utf-8'
 
 global client
 
 
 class Client:
-    def __init__(self) -> None:
+    def __init__(self, server_address) -> None:
+        self._server_address = server_address
         self._encryptor = Encryptor()
         self._is_connected = False
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,7 +43,7 @@ class Client:
             eel.username_reentry()
 
     def connect(self, username) -> None:
-        self._socket.connect(SERVER_ADDRESS)
+        self._socket.connect(self._server_address)
         self.check_username_validity(username)
 
     def handle_messages(self) -> None:
@@ -118,5 +117,7 @@ def connect(username) -> None:
 
 
 if __name__ == "__main__":
-    client = Client()
+    server_ip = socket.gethostbyname(sys.argv[1])
+    server_address = (server_ip, PORT)
+    client = Client(server_address)
     eel.start('index.html', port=0, size=(800, 500))
