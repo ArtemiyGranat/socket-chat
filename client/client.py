@@ -95,35 +95,31 @@ def send_message(msg) -> None:
 
 
 @eel.expose
-def send_file(path) -> None:
-    packet = {
-        'type': 'file',
-        'username': client._username,
-        'data': path
-    }
-    client.send_data(packet)
-
-
-@eel.expose
 def get_message(usrname, msg) -> None:
     eel.get_recv_msg(usrname, msg)
 
 
 @eel.expose
-def run() -> None:
+def connect(username) -> None:
     try:
-        eel.close_window()
-        thread = threading.Thread(target=client.handle_messages)  # daemon
-        thread.start()
-        eel.start('chat.html', port=0, size=(800, 500))
+        client.connect(username)
     except Exception:
         print('Server is offline. Try again later')
         eel.get_exception('Server is offline. Try again later')
 
 
 @eel.expose
-def connect(username) -> None:
-    client.connect(username)
+def run() -> None:
+    thread = threading.Thread(target=client.handle_messages)  # daemon
+    thread.start()
+    eel.open_chat()
+
+
+# def close_callback(route, websockets):
+#     if not websockets:
+#         client._is_connected = False
+#         client._socket.close()
+#         exit()
 
 
 if __name__ == '__main__':
@@ -131,3 +127,4 @@ if __name__ == '__main__':
     server_address = (server_ip, PORT)
     client = Client(server_address)
     eel.start('index.html', port=0, size=(800, 500))
+#   close_callback=close_callback)

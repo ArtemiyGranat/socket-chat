@@ -5,7 +5,7 @@ import os
 import pickle
 
 PORT = 5050
-SERVER_IP = socket.gethostbyname('0.0.0.0')
+SERVER_IP = socket.gethostbyname(socket.gethostname())
 SERVER_ADDRESS = (SERVER_IP, PORT)
 ENCODING = 'utf-8'
 DISCONNECT_MESSAGE = '/disconnect'

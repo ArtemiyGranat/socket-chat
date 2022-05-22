@@ -1,53 +1,110 @@
-* {
-    box-sizing: border-box;
-}
-
 body {
-    background: linear-gradient(to right, rgb(58, 57, 134), rgb(152, 174, 213));
-}   
-
-.navbar{
-    height:auto;
-    width:auto;
+    background-color: #add8e6;
+    font-family: monospace;
 }
 
-.navbar h1 {
-    text-transform:uppercase;
-    margin-top:5%;
-    font-size:28px;
-    letter-spacing:1.5px;
-    font-weight:900;
-    color:aliceblue;
-}
-
-.head {
-    margin-top:5%;
-    height:auto;
-    width:75%;
-    background: white;
-    border-radius:10px;
+.log-in-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    height: auto;
+    background: rgba(255, 255, 255, 0.841);
+    border-radius: 5%;
+    padding: 2% 0 0 4%;
     border: 2px solid black;
-    padding-left:5%;
+    overflow: hidden;
 }
 
-.head button {
-    max-height:50%;
-    margin-top:5% !important;
-    margin-bottom:5% !important;
-}
-
-.head h1 {
+.log-in-screen h1 {
+    /* text-align: center; */
+    color: rgb(70, 74, 76);
     text-transform:uppercase;
-    margin-top:5%;
-    font-size:28px;
+    font-size:54px;
     letter-spacing:1.5px;
-    font-weight:900;
+    font-weight:800;
 }
 
-.head p {
-    word-spacing:0px;
-    color: rgb(159, 172, 182);
+.log-in-screen h2 {
+    /* text-align: center; */
+    color: rgba(70, 74, 76, 0.793);
+    /* text-transform:uppercase; */
+    font-size:38px;
+    letter-spacing:1.5px;
+    font-weight:800;
+}
+
+.log-in-screen p {
+    color: rgb(110, 117, 123);
     font-size:17px;
     margin:0;
     margin-top:5px;
+}
+
+.log-in-screen h2 {
+    margin-top: 5%;
+    margin-bottom: 2%;
+}
+
+.log-in-button {
+    text-align: center;
+}
+
+.log-in-screen button {
+    background-color: #0b7ea4;
+    width: 25%;
+    max-height:50%;
+    margin-top:10% !important;
+    margin-bottom:5% !important;
+}
+
+.card-text {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.chat-container {
+    background: rgba(255, 255, 255, 0.841);
+    width:100%; 
+    min-height:97vh; 
+    max-height: 97vh;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+.chat-container .username {
+    font-weight: 800;
+    color: #4682b4;
+}
+
+.chat-screen .you {
+    font-weight: 800;
+}
+
+.chat-screen .recv-msg-div {
+    word-break: break-word;
+    background-color: #add8e6;
+    float: left;
+    clear: both;
+    max-width:50%;
+    border-radius:10px;
+}
+
+.card-footer {
+    position:relative !important;
+    margin-top: 1% !important;
+}
+
+.chat-screen .sent-msg-div {
+    word-break: break-word;
+    float: right;
+    clear: both;
+    min-width:15%;
+    max-width:50%;
+    border-radius:10px;
+}
+
+.chat-screen .time {
+    text-align: right;
 }
