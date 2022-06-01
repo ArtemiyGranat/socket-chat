@@ -1,3 +1,6 @@
+let is_file = false
+let file_path
+
 // Send functions
 
 async function send_name() {
@@ -14,17 +17,23 @@ function resend_username() {
 }
 
 async function send_message() {
-    let text = document.getElementById("msgbox").value
-    if (text != "") {
-        document.getElementById("msgbox").value = ""
-        display_sent_msg(text)
-        eel.send_message(text)
+    if (!is_file) {
+        let text = document.getElementById("msgbox").value
+        if (text != "") {
+            document.getElementById("msgbox").value = ""
+            display_sent_msg(text)
+            eel.send_message(text)
+        }
+    }
+    else {
+        show_input()
+        eel.send_file(file_path)
     }
 }
 
 // Display functions
 
-function display_recv_msg(usrname, text) {
+function display_recv_msg(usrname, text, is_file_recvd) {
     var div = document.createElement("div");
     div.className = "align-items-baseline mb-1";
 
@@ -46,6 +55,16 @@ function display_recv_msg(usrname, text) {
     var msg = document.createTextNode(text)
     msg_div.appendChild(msg)
     third_div.appendChild(msg_div)
+    
+    if (is_file_recvd) {
+        var download_btn = document.createElement("button");
+        download_btn.innerHTML = "Download";
+        download_btn.className = "btn btn-primary"; // TODO: кастом кнопки
+        download_btn.addEventListener("click", function() {
+            eel.download_file(text)
+        }, false);
+        third_div.appendChild(download_btn)
+    }
 
     var time_div = document.createElement("div")
     time_div.className = "time"
@@ -56,6 +75,7 @@ function display_recv_msg(usrname, text) {
     var time_text = document.createTextNode(date)
     time_div.appendChild(time_text)
     third_div.appendChild(time_div)
+
 
     var chat_body = document.getElementById("chat-body");
     chat_body.appendChild(div)
@@ -106,6 +126,13 @@ function display_sent_msg(text) {
         })
 }
 
+function show_input() {
+    is_file = false
+    document.getElementById("msgbox").hidden = false;
+    document.getElementById("filename-div").hidden = true;
+    document.getElementById("filename-div").innerHTML = "";
+}
+
 // Eel exposed functions
 
 eel.expose(open_chat);
@@ -122,7 +149,21 @@ function username_reentry() {
 
 eel.expose(get_recv_msg);
 function get_recv_msg(usrname, msg) {
-    display_recv_msg(usrname, msg)
+    display_recv_msg(usrname, msg, false)
+}
+
+eel.expose(get_recv_file);
+function get_recv_file(usrname, msg) {
+    display_recv_msg(usrname, msg, true)
+}
+
+eel.expose(show_filename);
+function show_filename(filepath) {
+    is_file = true
+    file_path = filepath
+    document.getElementById("msgbox").hidden = true;
+    document.getElementById("filename-div").hidden = false;
+    document.getElementById("filename-div").innerHTML = filepath;
 }
 
 eel.expose(close_window);
@@ -149,4 +190,9 @@ function messagebox_field_key_pressed(event) {
     if (event.keyCode == 13) {
         send_message()
     }
+}
+
+// File functions
+function open_file() {
+    eel.open_file();
 }

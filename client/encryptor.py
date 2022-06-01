@@ -19,11 +19,11 @@ class Encryptor:
     def encrypt(self, message) -> bytes:
         message = self.pad(message)
         iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        cipher = AES.new(self.key, AES.MODE_CFB, iv)
         return iv + cipher.encrypt(message.encode(ENCODING))
 
     def decrypt(self, message) -> str:
         iv = message[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        cipher = AES.new(self.key, AES.MODE_CFB, iv)
         dec_msg = cipher.decrypt(message[AES.block_size:]).decode(ENCODING)
         return self.unpad(dec_msg)
