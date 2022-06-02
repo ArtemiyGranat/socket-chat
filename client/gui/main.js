@@ -134,11 +134,6 @@ function display_sent_msg(text) {
         })
 }
 
-function show_input() {
-    is_file = false
-    document.getElementById("msgbox").readOnly = false;
-    document.getElementById("msgbox").value = "";
-}
 
 // Eel exposed functions
 
@@ -162,6 +157,13 @@ function get_recv_msg(usrname, msg) {
 eel.expose(get_recv_file);
 function get_recv_file(usrname, msg) {
     display_recv_msg(usrname, msg, true)
+}
+
+eel.expose(show_input);
+function show_input() {
+    is_file = false
+    document.getElementById("msgbox").readOnly = false;
+    document.getElementById("msgbox").value = "";
 }
 
 eel.expose(show_filename);
@@ -188,7 +190,6 @@ function get_exception(ex) {
 function username_field_key_pressed(event) {
     if (event.keyCode == 13) {
         send_name()
-        // document.getElementById('username_field').setAttribute('onkeydown','()')
     }
 }
 
@@ -198,7 +199,17 @@ function messagebox_field_key_pressed(event) {
     }
 }
 
+function body_key_pressed(event) {
+    if (event.keyCode === 116) {
+        event.preventDefault();
+        if (eel.is_connected() == true) {
+            open_chat()
+        }
+    }
+}
+
 // File functions
+
 function open_file() {
     eel.open_file();
 }

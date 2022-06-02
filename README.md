@@ -3,12 +3,10 @@
 * Python 3.8 and newer
 * Eel library
 * Pycryptodome library 
-```zsh
-pip install eel
-```
 
+## Setup
 ```zsh
-pip install pycryptodome
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -29,4 +27,5 @@ python client.py <server-ip>
 - [x] GUI: log in window
 - [x] GUI: chat window
 - [x] Private messages
-- [ ] File transfer
+- [X] File transfer
+- [ ] Final steps

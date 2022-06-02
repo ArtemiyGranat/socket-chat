@@ -43,8 +43,8 @@ class Server:
             sender_username = packet['username']
             for client in self._clients:
                 if self._clients[client] == sender_username:
-                    self.send_msg_from_server(client, '''There is no such
-                                                 person on the server''')
+                    self.send_msg_from_server(client, 'There is no such person'
+                                              ' on the server')
                     break
 
     def send_msg_from_server(self, conn, msg) -> None:
@@ -61,7 +61,7 @@ class Server:
         packet = {
             'type': 'message',
             'username': 'server',
-            'data': f'''{self._clients[conn]} has been disconnected'''
+            'data': f'{self._clients[conn]} has been disconnected'
         }
         packet = pickle.dumps(packet)
         for client in self._clients:
@@ -93,7 +93,15 @@ class Server:
             f.close()
 
     def recv_file(self, conn, packet) -> None:
-        path = os.path.join('files', packet['file_name'])
+        old_file_name = packet['file_name']
+        file_name = old_file_name
+        if (os.path.exists(os.path.join('files', old_file_name))):
+            i = 1
+            while os.path.exists(os.path.join('files', file_name)):
+                file_name = os.path.splitext(old_file_name)[0] + \
+                    f'-{str(i)}' + os.path.splitext(old_file_name)[1]
+                i += 1
+        path = os.path.join('files', file_name)
         with open(path, "wb") as f:
             while True:
                 packet = conn.recv(32768)
@@ -145,6 +153,8 @@ class Server:
                         self.recv_file(conn, packet)
                     elif packet['type'] == 'download_request':
                         self.send_file(conn, packet)
+                    # elif packet['type'] == 'disconnect_msg':
+                    #     is_connected = False
         finally:
             date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
             print(f'[{date}] Client {addr} has been disconnected')

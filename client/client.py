@@ -5,8 +5,8 @@ import sys
 import time
 import pickle
 import tkinter as tk
-from tkinter import ttk
 from tkinter import filedialog as fd
+from tkinter.filedialog import asksaveasfile
 
 import eel
 
@@ -22,6 +22,9 @@ global client
 
 class Client:
     def __init__(self, server_address) -> None:
+        file_dir = os.path.join('files')
+        if not os.path.exists(file_dir):
+            os.mkdir(file_dir)
         self._server_address = server_address
         self._encryptor = Encryptor()
         self._is_connected = False
@@ -37,7 +40,7 @@ class Client:
                 packet = {
                     'type': 'file',
                     'username': self._username,
-                    'file_name': os.path.basename(path),
+                    'file_name': self._username + '-' + os.path.basename(path),
                     'data': data
                 }
                 packet = pickle.dumps(packet)
@@ -49,15 +52,16 @@ class Client:
 
     def recv_file(self, packet) -> None:
         path = os.path.join('files', packet['file_name'])
-        with open(path, "wb") as f:
-            while True:
-                packet = self._socket.recv(32768)
-                if packet:
-                    packet = pickle.loads(packet)
-                    if packet['data'] == b'':
-                        break
-                    f.write(packet['data'])
-            f.close()
+        if path:
+            with open(path, "wb") as f:
+                while True:
+                    packet = self._socket.recv(32768)
+                    if packet:
+                        packet = pickle.loads(packet)
+                        if packet['data'] == b'':
+                            break
+                        f.write(packet['data'])
+                f.close()
 
     def recv_file_message(self, packet) -> None:
         get_file(packet['username'], packet['file_name'])
@@ -105,14 +109,22 @@ class Client:
                 elif packet['type'] == 'file_request':
                     self.recv_file(packet)
                     continue
-                dec_message = self._encryptor.decrypt(packet['data'])
-                get_message(username, dec_message)
+                message = packet['data']
+                if packet['username'] != 'server':
+                    message = self._encryptor.decrypt(packet['data'])
+                get_message(username, message)
             except Exception as e:
                 print(e)
                 print('Error! Disconnecting from the server')
                 self._socket.close()
                 eel.close_window()
                 break
+        # packet = {
+        #     'type': 'disconnect_msg'
+        #     }
+        # packet = pickle.dumps(packet)
+        # self._socket.sendall(packet)
+        # self._socket.close()
 
 
 @eel.expose
@@ -145,7 +157,7 @@ def send_file(file_path) -> None:
         packet = {
             'type': 'request',
             'username': client._username,
-            'file_name': os.path.basename(file_path),
+            'file_name': client._username + '-' + os.path.basename(file_path),
             'file_size': file_size
         }
         client.send_data(packet)
@@ -161,7 +173,10 @@ def open_file() -> None:
     root.withdraw()
     root.wm_attributes("-topmost", 1)
     filepath = fd.askopenfilename()
-    eel.show_filename(filepath)
+    if filepath:
+        eel.show_filename(filepath)
+    else:
+        eel.show_input()
 
 
 @eel.expose
@@ -193,17 +208,21 @@ def connect(username) -> None:
         eel.get_exception('Server is offline. Try again later')
 
 
-# @eel.expose
 def run() -> None:
     thread = threading.Thread(target=client.handle_messages)
     thread.start()
     eel.open_chat()
 
 
+@eel.expose
+def is_connected() -> None:
+    return client._is_connected
+
+
 def close_callback(route, websockets):
     print('Disconnecting from the server')
-    client._is_connected = False
-    client._socket.close()
+    # client._is_connected = False
+    # client._socket.close()
     try:
         sys.exit(0)
     except SystemExit:
