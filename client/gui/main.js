@@ -26,8 +26,8 @@ async function send_message() {
         }
     }
     else {
-        show_input()
         eel.send_file(file_path)
+        show_input()
     }
 }
 
@@ -128,9 +128,8 @@ function display_sent_msg(text) {
 
 function show_input() {
     is_file = false
-    document.getElementById("msgbox").hidden = false;
-    document.getElementById("filename-div").hidden = true;
-    document.getElementById("filename-div").innerHTML = "";
+    document.getElementById("msgbox").readOnly = false;
+    document.getElementById("msgbox").value = "";
 }
 
 // Eel exposed functions
@@ -161,9 +160,8 @@ eel.expose(show_filename);
 function show_filename(filepath) {
     is_file = true
     file_path = filepath
-    document.getElementById("msgbox").hidden = true;
-    document.getElementById("filename-div").hidden = false;
-    document.getElementById("filename-div").innerHTML = filepath;
+    document.getElementById("msgbox").readOnly = true;
+    document.getElementById("msgbox").value = filepath;
 }
 
 eel.expose(close_window);

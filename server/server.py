@@ -4,6 +4,7 @@ import sys
 import os
 import shutil
 import time
+import datetime
 import pickle
 
 PORT = 5050
@@ -110,7 +111,8 @@ class Server:
         self.send_all(conn, file_packet)
 
     def handle_client(self, conn, addr) -> None:
-        print(f'[NEW CONNECTION] {addr} connected.')
+        date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+        print(f'[{date}] [NEW CONNECTION] {addr} connected.')
 
         is_connected = False
         while not is_connected:
@@ -129,7 +131,8 @@ class Server:
                     is_connected = False
                 else:
                     packet = pickle.loads(packet)
-                    print(f'[{self._clients[conn]}] {packet}')
+                    date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+                    print(f'[{date}] [{self._clients[conn]}] {packet}')
                     if packet['type'] == 'message':
                         self.send_all(conn, packet)
                     elif packet['type'] == 'private_message':
@@ -143,20 +146,24 @@ class Server:
                     elif packet['type'] == 'download_request':
                         self.send_file(conn, packet)
         finally:
-            print(f'Client {addr} has been disconnected')
+            date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+            print(f'[{date}] Client {addr} has been disconnected')
             self.send_disc_msg(conn)
             self._clients.pop(conn)
             conn.close()
 
     def run_server(self) -> None:
+        date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
         self._socket.listen()
-        print(f'[LISTENING] Server is listening on {SERVER_IP}')
+        print(f'[{date}] [LISTENING] Server is listening on {SERVER_IP}')
         while True:
             conn, addr = self._socket.accept()
             thread = threading.Thread(target=self.handle_client,
                                       args=(conn, addr))
             thread.start()
-            print(f'[ACTIVE CONNECTIONS] {threading.active_count() - 2}')
+            date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+            print(f'''[{date}] [ACTIVE CONNECTIONS] {threading.active_count()
+                                                                    - 2}''')
 
     def server_shutdown(self) -> None:
         file_dir = os.path.join('files')
@@ -181,5 +188,6 @@ if __name__ == '__main__':
             cmd = input()
         server.server_shutdown()
     except Exception as e:
-        print(e)
+        date = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
+        print(f'[{date}] {e}')
         server.server_shutdown()
