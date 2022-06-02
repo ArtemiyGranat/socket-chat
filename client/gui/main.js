@@ -5,9 +5,14 @@ let file_path
 
 async function send_name() {
     username = document.getElementById("username_field").value
-    let answer = eel.connect(username)
-    if (answer == true) {
-        document.getElementById('signin_btn').setAttribute('onclick','resend_username()')
+    if (username.trim().length >= 3 && username.length <= 12) {
+        let answer = eel.connect(username.trim())
+        if (answer == true) {
+            document.getElementById('signin_btn').setAttribute('onclick','resend_username()')
+        }
+    }
+    else {
+        get_exception("Wrong username input, please, choose another one")
     }
 }
 
@@ -19,10 +24,13 @@ function resend_username() {
 async function send_message() {
     if (!is_file) {
         let text = document.getElementById("msgbox").value
-        if (text != "") {
+        if (text.trim().length > 0 && text.trim().length <= 5000) {
             document.getElementById("msgbox").value = ""
             display_sent_msg(text)
             eel.send_message(text)
+        }
+        else {
+            get_exception("Message must not be empty and its length must not exceed 5000 characters")
         }
     }
     else {

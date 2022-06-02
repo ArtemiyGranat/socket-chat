@@ -47,14 +47,10 @@
                 <div class="input-group">
                     <div class="input-group-text bg-transparent border-0">
                         <button class="btn btn-light text-secondary" onclick="open_file()">
-                            <!-- <input type="file" id="open-file" onchange="open_file()"> -->
                             <i class="fas fa-paperclip"></i>
                         </button>
                     </div>
-                    <input type="text" class="form-control border-0" placeholder="Enter a message" id="msgbox" onkeydown="messagebox_field_key_pressed(event)">
-                    <div class="filename-div border-0" id="filename-div" hidden>
-
-                    </div>
+                    <input type="text" class="form-control border-0" placeholder="Enter a message" id="msgbox" maxlength="5001" onkeydown="messagebox_field_key_pressed(event)">
                     <div class="input-group-text bg-transparent border-0">
                         <button class="btn btn-light text-secondary" onclick="send_message()">
                             <i class="fas fa-paper-plane"></i>

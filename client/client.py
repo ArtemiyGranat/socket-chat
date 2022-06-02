@@ -141,14 +141,18 @@ def send_message(msg) -> None:
 @eel.expose
 def send_file(file_path) -> None:
     file_size = os.path.getsize(file_path)
-    packet = {
-        'type': 'request',
-        'username': client._username,
-        'file_name': os.path.basename(file_path),
-        'file_size': file_size
-    }
-    client.send_data(packet)
-    client.send_file(file_path)
+    if file_size <= 60000000:
+        packet = {
+            'type': 'request',
+            'username': client._username,
+            'file_name': os.path.basename(file_path),
+            'file_size': file_size
+        }
+        client.send_data(packet)
+        client.send_file(file_path)
+    else:
+        eel.get_exception('File size must be less than 60 megabytes,'
+                          ' please choose another file')
 
 
 @eel.expose
@@ -189,23 +193,26 @@ def connect(username) -> None:
         eel.get_exception('Server is offline. Try again later')
 
 
-@eel.expose
+# @eel.expose
 def run() -> None:
-    thread = threading.Thread(target=client.handle_messages)  # daemon
+    thread = threading.Thread(target=client.handle_messages)
     thread.start()
     eel.open_chat()
 
 
-# def close_callback(route, websockets):
-#     if not websockets:
-#         client._is_connected = False
-#         client._socket.close()
-#         exit()
+def close_callback(route, websockets):
+    print('Disconnecting from the server')
+    client._is_connected = False
+    client._socket.close()
+    try:
+        sys.exit(0)
+    except SystemExit:
+        os._exit(0)
 
 
 if __name__ == '__main__':
     server_ip = socket.gethostbyname(sys.argv[1])
     server_address = (server_ip, PORT)
     client = Client(server_address)
-    eel.start('index.html', port=0, size=(800, 500))
-#   close_callback=close_callback)
+    eel.start('index.html', port=0, size=(800, 500),
+              close_callback=close_callback)
