@@ -17,13 +17,21 @@ class Encryptor:
         return msg[:-ord(msg[len(msg)-1:])]
 
     def encrypt(self, message) -> bytes:
-        message = self.pad(message)
-        iv = Random.new().read(AES.block_size)
-        cipher = AES.new(self.key, AES.MODE_CFB, iv)
-        return iv + cipher.encrypt(message.encode(ENCODING))
+        try:
+            message = self.pad(message)
+            iv = Random.new().read(AES.block_size)
+            cipher = AES.new(self.key, AES.MODE_CFB, iv)
+            return iv + cipher.encrypt(message.encode(ENCODING))
+        except Exception as e:
+            print(e)
+            print('[ENCRYPTION ERROR] Wrong encryption key format')
 
     def decrypt(self, message) -> str:
-        iv = message[:AES.block_size]
-        cipher = AES.new(self.key, AES.MODE_CFB, iv)
-        dec_msg = cipher.decrypt(message[AES.block_size:]).decode(ENCODING)
-        return self.unpad(dec_msg)
+        try:
+            iv = message[:AES.block_size]
+            cipher = AES.new(self.key, AES.MODE_CFB, iv)
+            dec_msg = cipher.decrypt(message[AES.block_size:]).decode(ENCODING)
+            return self.unpad(dec_msg)
+        except Exception as e:
+            print(e)
+            print('[DECRYPTION ERROR] Wrong encryption key')
