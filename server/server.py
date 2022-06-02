@@ -77,7 +77,7 @@ class Server:
         path = os.path.join('files', packet['file_name'])
         with open(path, "rb") as f:
             while True:
-                data = f.read(8192)
+                data = f.read(32000)
                 packet = {
                     'type': 'file',
                     'username': self._clients[conn],
@@ -95,7 +95,7 @@ class Server:
         path = os.path.join('files', packet['file_name'])
         with open(path, "wb") as f:
             while True:
-                packet = conn.recv(8192)
+                packet = conn.recv(32768)
                 if packet:
                     packet = pickle.loads(packet)
                     if packet['data'] == b'':
@@ -114,7 +114,7 @@ class Server:
 
         is_connected = False
         while not is_connected:
-            username = conn.recv(8192).decode(ENCODING)
+            username = conn.recv(16384).decode(ENCODING)
             if username not in self._clients.values():
                 conn.send('OK'.encode(ENCODING))
                 self._clients[conn] = username
@@ -124,7 +124,7 @@ class Server:
 
         try:
             while is_connected:
-                packet = conn.recv(8192)
+                packet = conn.recv(16384)
                 if not packet:
                     is_connected = False
                 else:

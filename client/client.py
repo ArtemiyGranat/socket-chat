@@ -30,11 +30,10 @@ class Client:
     def send_username(self, username) -> None:
         self._socket.send(username.encode(ENCODING))
 
-    # TODO: atm working with size of files < 8192
     def send_file(self, path) -> None:
         with open(path, "rb") as f:
             while True:
-                data = f.read(8192)
+                data = f.read(32000)
                 packet = {
                     'type': 'file',
                     'username': self._username,
@@ -52,7 +51,7 @@ class Client:
         path = os.path.join('files', packet['file_name'])
         with open(path, "wb") as f:
             while True:
-                packet = self._socket.recv(8192)
+                packet = self._socket.recv(32768)
                 if packet:
                     packet = pickle.loads(packet)
                     if packet['data'] == b'':
@@ -72,7 +71,7 @@ class Client:
 
     def check_username_validity(self, username) -> None:
         self.send_username(username)
-        answer = self._socket.recv(8192).decode(ENCODING)
+        answer = self._socket.recv(16384).decode(ENCODING)
         if answer == 'OK':
             self._username = username
             self._is_connected = True
@@ -87,7 +86,7 @@ class Client:
     def handle_messages(self) -> None:
         while self._is_connected:
             try:
-                packet = self._socket.recv(8192)
+                packet = self._socket.recv(16384)
                 if packet:
                     packet = pickle.loads(packet)
                 if not packet:
