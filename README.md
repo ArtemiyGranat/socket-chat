@@ -1,5 +1,6 @@
 # LAN Messenger
 ## Requirements
+* Google Chrome/Chromium
 * Python 3.8 and newer
 * Eel library
 * Pycryptodome library 

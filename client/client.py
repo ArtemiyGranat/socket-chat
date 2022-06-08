@@ -49,6 +49,7 @@ class Client:
                 if data == b'':
                     break
             f.close()
+        time.sleep(0.1)
 
     def recv_file(self, packet) -> None:
         path = os.path.join('files', packet['file_name'])
@@ -62,10 +63,10 @@ class Client:
                             break
                         f.write(packet['data'])
                 f.close()
+        time.sleep(0.1)
 
     def recv_file_message(self, packet) -> None:
         get_file(packet['username'], packet['file_name'])
-
     def send_data(self, data) -> None:
         if data['type'] != 'request' and data['type'] != 'download_request':
             enc_data = self._encryptor.encrypt(data['data'])
@@ -115,7 +116,7 @@ class Client:
                 get_message(username, message)
             except Exception as e:
                 print(e)
-                print('Error! Disconnecting from the server')
+                print('[ERROR] Disconnecting from the server')
                 self._socket.close()
                 eel.close_window()
                 break
@@ -230,8 +231,11 @@ def close_callback(route, websockets):
 
 
 if __name__ == '__main__':
-    server_ip = socket.gethostbyname(sys.argv[1])
-    server_address = (server_ip, PORT)
-    client = Client(server_address)
-    eel.start('index.html', port=0, size=(800, 500),
-              close_callback=close_callback)
+    try:
+        server_ip = socket.gethostbyname(sys.argv[1])
+        server_address = (server_ip, PORT)
+        client = Client(server_address)
+        eel.start('index.html', port=0, size=(800, 500),
+                close_callback=close_callback)
+    except IndexError as e:
+        print('[ERROR] IP address was not provided')

@@ -35,6 +35,7 @@ async function send_message() {
     }
     else {
         eel.send_file(file_path)
+        display_sent_msg(file_path.substring(file_path.lastIndexOf('/') + 1))
         show_input()
     }
 }

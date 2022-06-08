@@ -68,6 +68,17 @@ class Server:
             if client != conn:
                 client.send(packet)
 
+    def send_con_msg(self, conn) -> None:
+        packet = {
+            'type': 'message',
+            'username': 'server',
+            'data': f'{self._clients[conn]} has been connected'
+        }
+        packet = pickle.dumps(packet)
+        for client in self._clients:
+            if client != conn:
+                client.send(packet)
+
     def send_file(self, conn, packet):
         request_packet = {
             'type': 'file_request',
@@ -133,6 +144,7 @@ class Server:
                 conn.send('WRONG USERNAME'.encode(ENCODING))
 
         try:
+            self.send_con_msg(conn)
             while is_connected:
                 packet = conn.recv(16384)
                 if not packet:
