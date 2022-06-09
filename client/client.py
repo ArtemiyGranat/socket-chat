@@ -233,9 +233,11 @@ def close_callback(route, websockets):
 if __name__ == '__main__':
     try:
         server_ip = socket.gethostbyname(sys.argv[1])
-        server_address = (server_ip, PORT)
-        client = Client(server_address)
-        eel.start('index.html', port=0, size=(800, 500),
-                close_callback=close_callback)
-    except IndexError as e:
+    except IndexError:
         print('[ERROR] IP address was not provided')
+    except socket.gaierror:
+        print('[ERROR] Invalid IP address format')
+    server_address = (server_ip, PORT)
+    client = Client(server_address)
+    eel.start('index.html', port=0, size=(800, 500),
+            close_callback=close_callback)
