@@ -5,7 +5,7 @@ let file_path
 
 async function send_name() {
     username = document.getElementById("username_field").value
-    if (username.trim().length >= 3 && username.length <= 12) {
+    if (username.trim().length >= 3 && username.length <= 10) {
         let answer = eel.connect(username.trim())
         if (answer == true) {
             document.getElementById('signin_btn').setAttribute('onclick','resend_username()')
@@ -68,7 +68,7 @@ function display_recv_msg(usrname, text, is_file_recvd) {
     if (is_file_recvd) {
         var download_btn = document.createElement("button");
         download_btn.innerHTML = "Download";
-        download_btn.className = "btn btn-primary"; // TODO: кастом кнопки
+        download_btn.className = "btn btn-primary"; 
         download_btn.addEventListener("click", function() {
             eel.download_file(text)
         }, false);

@@ -6,7 +6,6 @@ import time
 import pickle
 import tkinter as tk
 from tkinter import filedialog as fd
-from tkinter.filedialog import asksaveasfile
 
 import eel
 
@@ -67,6 +66,7 @@ class Client:
 
     def recv_file_message(self, packet) -> None:
         get_file(packet['username'], packet['file_name'])
+        
     def send_data(self, data) -> None:
         if data['type'] != 'request' and data['type'] != 'download_request':
             enc_data = self._encryptor.encrypt(data['data'])
@@ -120,12 +120,6 @@ class Client:
                 self._socket.close()
                 eel.close_window()
                 break
-        # packet = {
-        #     'type': 'disconnect_msg'
-        #     }
-        # packet = pickle.dumps(packet)
-        # self._socket.sendall(packet)
-        # self._socket.close()
 
 
 @eel.expose
@@ -222,8 +216,8 @@ def is_connected() -> None:
 
 def close_callback(route, websockets):
     print('Disconnecting from the server')
-    # client._is_connected = False
-    # client._socket.close()
+    client._is_connected = False
+    client._socket.close()
     try:
         sys.exit(0)
     except SystemExit:
@@ -233,11 +227,11 @@ def close_callback(route, websockets):
 if __name__ == '__main__':
     try:
         server_ip = socket.gethostbyname(sys.argv[1])
+        server_address = (server_ip, PORT)
+        client = Client(server_address)
+        eel.start('index.html', port=0, size=(800, 500),
+                close_callback=close_callback)
     except IndexError:
         print('[ERROR] IP address was not provided')
     except socket.gaierror:
         print('[ERROR] Invalid IP address format')
-    server_address = (server_ip, PORT)
-    client = Client(server_address)
-    eel.start('index.html', port=0, size=(800, 500),
-            close_callback=close_callback)

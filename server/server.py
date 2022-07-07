@@ -143,8 +143,8 @@ class Server:
             else:
                 conn.send('WRONG USERNAME'.encode(ENCODING))
 
+        self.send_con_msg(conn)
         try:
-            self.send_con_msg(conn)
             while is_connected:
                 packet = conn.recv(16384)
                 if not packet:
@@ -191,7 +191,6 @@ class Server:
         file_dir = os.path.join('files')
         if os.path.exists(file_dir):
             shutil.rmtree(file_dir, ignore_errors=True)
-
         self._socket.close()
         try:
             sys.exit(0)

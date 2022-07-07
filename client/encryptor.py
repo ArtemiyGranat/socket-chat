@@ -6,8 +6,8 @@ ENCODING = 'utf-8'
 
 class Encryptor:
     def __init__(self) -> None:
-        key_file = open('key.txt', 'r')
-        self.key = key_file.readline().encode(ENCODING)
+        key_file = open('key.txt', 'rb')
+        self.key = key_file.read(8192)
 
     def pad(self, msg) -> str:
         bs = AES.block_size

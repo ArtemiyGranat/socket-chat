@@ -1,4 +1,4 @@
-# LAN Messenger
+# Socket Messenger
 ## Requirements
 * Google Chrome/Chromium
 * Python 3.8 and newer
@@ -20,13 +20,10 @@ python server.py
 python client.py <server-ip>
 ```
 
-## To-do
-
+## Current features
 - [x] Client-server connection
 - [x] Text messaging
 - [x] Encrypting messages with AES encryption
-- [x] GUI: log in window
-- [x] GUI: chat window
+- [x] GUI
 - [x] Private messages
 - [X] File transfer
-- [ ] Final steps
